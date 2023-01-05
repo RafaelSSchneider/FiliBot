@@ -11,11 +11,11 @@ for(const directiories of dir){
 
 	for (const file of commandFiles) {
 		// Grab the SlashCommandBuilder#toJSON() output of each command's data for deployment
+		console.log(`Carregando comando ${file} do diretorio ${directiories}`)
 		const command = require(`../commands/${directiories}/${file}`);
 		commands.push(command.data.toJSON());
 	}
 }
-
 // Construct and prepare an instance of the REST module
 const rest = new REST({ version: '10' }).setToken(token);
 
