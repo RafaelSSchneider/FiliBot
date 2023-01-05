@@ -6,13 +6,12 @@ const { VoiceConnectionStatus } = require('@discordjs/voice');
 module.exports = {
     data: new SlashCommandBuilder()
     .setName('join')
-    .setDescription('Da oi para o corno'),
+    .setDescription('Da oi para os cornos'),
     
     async execute(message){
-
         console.log(message)
         const userOnChannel = message.member
-        if(!userOnChannel.voice){
+        if(!userOnChannel.voice.channelId){
             message.reply("Entra no canal cara")
         }else{
             const connection = joinVoiceChannel({
@@ -20,6 +19,7 @@ module.exports = {
                 guildId: message.guildId,
                 adapterCreator: message.guild.voiceAdapterCreator,
             });
+            
             message.reply('Entrei juntinho de voce arromabado')
         }
     },
