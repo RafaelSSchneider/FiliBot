@@ -1,15 +1,19 @@
 const { REST, Routes } = require('discord.js');
 const { clientId, guildId, token } = require('../config.json');
 const fs = require('node:fs');
+const dir = ['../commands/testCommands','../commands/voiceHandling'];
 
 const commands = [];
-// Grab all the command files from the commands directory you created earlier
-const commandFiles = fs.readdirSync('../commands').filter(file => file.endsWith('.js'));
 
-// Grab the SlashCommandBuilder#toJSON() output of each command's data for deployment
-for (const file of commandFiles) {
-	const command = require(`../commands/${file}`);
-	commands.push(command.data.toJSON());
+// Grab all the command files from the commands directory you created earlier
+for(const directiories of dir){
+	const commandFiles = (fs.readdirSync(`../commands/${directiories}`).filter(file => file.endsWith('.js')));
+
+	for (const file of commandFiles) {
+		// Grab the SlashCommandBuilder#toJSON() output of each command's data for deployment
+		const command = require(`../commands/${directiories}/${file}`);
+		commands.push(command.data.toJSON());
+	}
 }
 
 // Construct and prepare an instance of the REST module
@@ -18,7 +22,7 @@ const rest = new REST({ version: '10' }).setToken(token);
 // and deploy your commands!
 (async () => {
 	try {
-		console.log(`Started refreshing ${commands.length} application (/) commands.`);
+		console.log(`Iniciando instalação de ${commands.length} comandos.`);
 
         //Aqui se define de deseja só usar uma guilda(server) ou todos, para mudar todos só trocar a rota para Routes.applicationCommands(clientId),
 		// The put method is used to fully refresh all commands in the guild with the current set
@@ -26,10 +30,14 @@ const rest = new REST({ version: '10' }).setToken(token);
 			Routes.applicationGuildCommands(clientId, guildId),
 			{ body: commands },
 		);
-
-		console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+		for(const command of commands){
+			console.log(`'Load status': '✔️  -> Command Loaded: '` + command.name);
+		}
 	} catch (error) {
 		// And of course, make sure you catch and log any errors!
 		console.error(error);
+		for(const command of commands){
+			console.log(`'Load status': '❌  -> Command Error'` + command.name)
+		}
 	}
 })();

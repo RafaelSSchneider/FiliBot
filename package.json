@@ -1,5 +1,9 @@
 {
+  "scripts": {
+    "start": "cd commandDeployment && node deployCommands.js && cd .. && node index.js"
+  },
   "dependencies": {
+    "@discordjs/voice": "^0.14.0",
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.3"
   }
