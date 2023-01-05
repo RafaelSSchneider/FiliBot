@@ -8,7 +8,8 @@ module.exports = {
     
 
     async execute(message) {
-        const connection = getVoiceConnection(message.member.voice.channelId)
+        const connection = getVoiceConnection(message.guildId)
         connection.destroy()
+        message.reply('Eu saio pq eu quero, não pq vc quer!')
     },
 };

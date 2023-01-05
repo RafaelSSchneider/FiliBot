@@ -9,7 +9,6 @@ module.exports = {
     .setDescription('Da oi para os cornos'),
     
     async execute(message){
-        console.log(message)
         const userOnChannel = message.member
         if(!userOnChannel.voice.channelId){
             message.reply("Entra no canal cara")
@@ -19,7 +18,7 @@ module.exports = {
                 guildId: message.guildId,
                 adapterCreator: message.guild.voiceAdapterCreator,
             });
-            
+
             message.reply('Entrei juntinho de voce arromabado')
         }
     },
