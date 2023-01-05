@@ -1,7 +1,9 @@
 const { REST, Routes } = require('discord.js');
 const { clientId, guildId, token } = require('../config.json');
 const fs = require('node:fs');
-const dir = ['../commands/testCommands','../commands/voiceHandling'];
+
+// Read all directories inside the commands and build they path
+const dir = (fs.readdirSync('../commands').map((item) => '../commands/' + item));
 
 const commands = [];
 

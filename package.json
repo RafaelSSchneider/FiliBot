@@ -1,6 +1,8 @@
 {
   "scripts": {
-    "start": "cd commandDeployment && node deployCommands.js && cd .. && node index.js"
+    "deployStart": "cd commandDeployment && node deployCommands.js && cd .. && node index.js",
+    "deploy": "cd commandDeployment && node deployCommands.js",
+    "start": "node index.js"
   },
   "dependencies": {
     "@discordjs/voice": "^0.14.0",
