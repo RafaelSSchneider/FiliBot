@@ -1,25 +1,70 @@
-const { SlashCommandBuilder, ApplicationCommandOptionType } = require("discord.js");
-const { createAudioPlayer } = require('@discordjs/voice');
-const { createAudioResource} = require('@discordjs/voice');
-const { joinVoiceChannel } = require('@discordjs/voice');
-const { join } = require('node:path');
+const { SlashCommandBuilder, time } = require("discord.js");
+const { createAudioPlayer, createAudioResource, joinVoiceChannel, getVoiceConnection, AudioPlayer, AudioPlayerStatus } = require('@discordjs/voice');
+const yts = require('yt-search');
+const ytsc = require('ytdl-core');
+const queue = [];
 
 module.exports = {
     data: new SlashCommandBuilder()
-    .setName('play')
-    .setDescription('Toca pa nois'),
+        .setName('play')
+        .setDescription('Toca pa nois')
+        .addStringOption(option => option.setName('music').setDescription('Nome da música').setRequired(true)),
+
     async execute(message) {
-        const connection = joinVoiceChannel({
+
+        const player = createAudioPlayer();
+        const searchResult = await yts(message.options.getString('music')); 
+        const stream = await ytsc(searchResult.videos[0].url, { filter: 'audioonly' });
+        var playing = false;
+        queue.unshift({
+            video: searchResult.videos[0],
+            stream: stream
+        });
+
+        const resource = createAudioResource(queue[0].stream);
+        const connect = joinVoiceChannel({
             channelId: message.member.voice.channelId,
             guildId: message.guildId,
             adapterCreator: message.guild.voiceAdapterCreator,
         });
-        message.reply('Entrando para tocar pa nois')
+        const connection = getVoiceConnection(message.guildId);
 
-        const player = createAudioPlayer();
-        const resource = createAudioResource(`C://Users//rafae//Desktop/FiliBot/Fili-Bot//commands/voiceHandling//music.mp3`);
-        player.play(resource);
-        connection.subscribe(player);
+        const playMusic = async () => {
+            if(playing === false){
+                //message.reply('Tocando a musica: ' + queue[0].video.title);
+                player.play(resource);
+                connection.subscribe(player);
+            }else if(playing === true){
+                let timeout = await ytsc.getBasicInfo(queue[0].video.url).then(info => info.videoDetails.lengthSeconds * 1000);
+                function playNext(){
+                    queue.shift();
+                    if(queue.length === 0){
+                        playing = false;
+                        return;
+                    }
+                    player.play(resource);
+                    connection.subscribe(player);
+                }
+                if(queue.length > 0){
+                    setTimeout(playNext, timeout);
+                }else{
+                    playing = false;
+                    return;
+                }
+                player.play(resource);
+                connection.subscribe(player);
+            }
+    };
+
+        const connected = connection ? true : false;
+        if(connected){
+            playing = true;
+            playMusic();
+        }else{
+            connect;
+            playing = false;
+            playMusic();
+        }
 
     },
 };
