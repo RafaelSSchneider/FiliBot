@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, ApplicationCommandOptionType } = require("discord.js");
-const { getVoiceConnection } = require('@discordjs/voice');
-const {createAudioPlayer} = require('@discordjs/voice');
-const { createAudioResource } = require('@discordjs/voice');
+const { createAudioPlayer } = require('@discordjs/voice');
+const { createAudioResource} = require('@discordjs/voice');
+const { joinVoiceChannel } = require('@discordjs/voice');
 const { join } = require('node:path');
 
 module.exports = {
@@ -9,18 +9,17 @@ module.exports = {
     .setName('play')
     .setDescription('Toca pa nois'),
     async execute(message) {
+        const connection = joinVoiceChannel({
+            channelId: message.member.voice.channelId,
+            guildId: message.guildId,
+            adapterCreator: message.guild.voiceAdapterCreator,
+        });
+        message.reply('Entrando para tocar pa nois')
 
-        const connection = getVoiceConnection(message.guildId)
-        if(!connection){
-            message.reply("Eu não estou conectado a nenhum canal de voz, use o comando /join para me conectar")
-        }else{
-                const player = createAudioPlayer();
-                
-                const resource = createAudioResource('music.mp3');
+        const player = createAudioPlayer();
+        const resource = createAudioResource(`C://Users//rafae//Desktop/FiliBot/Fili-Bot//commands/voiceHandling//music.mp3`);
+        player.play(resource);
+        connection.subscribe(player);
 
-                player.play(resource);
-                connection.subscribe(player);
-                message.reply('Tocando' + resource)
-        }
     },
 };
