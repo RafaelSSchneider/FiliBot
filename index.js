@@ -4,7 +4,9 @@ const { Collection } = require('discord.js')
 const path = require('node:path');
 const { Client, Events, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
-const dir = ['../commands/testCommands','../commands/voiceHandling'];
+
+// Read all directories inside the commands and build they path
+const dir = (fs.readdirSync('./commands').map((item) => '../commands/' + item));
 
 
 // Create a new client instance
