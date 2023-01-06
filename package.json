@@ -3,8 +3,13 @@
     "start": "cd commandDeployment && node deployCommands.js && cd .. && node index.js"
   },
   "dependencies": {
+    "@discordjs/opus": "^0.8.0",
     "@discordjs/voice": "^0.14.0",
+    "discord-player": "^5.3.2",
     "discord.js": "^14.7.1",
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3",
+    "ffmpeg-static": "^5.1.0",
+    "yt-search": "^2.10.3",
+    "ytdl-core": "^4.11.2"
   }
 }
