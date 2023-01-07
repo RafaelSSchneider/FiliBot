@@ -1,9 +1,10 @@
-// Require the necessary discord.js classes
 const fs = require('node:fs');
+const testr = require('node:');
 const { Collection } = require('discord.js')
 const path = require('node:path');
 const { Client, Events, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
+
 
 // Read all directories inside the commands and build they path
 const dir = (fs.readdirSync('./commands').map((item) => '../commands/' + item));
