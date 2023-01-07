@@ -14,17 +14,18 @@ module.exports = class Reprodution {
     connection = null
     
     // play()
-    async play(message){
+    async play(message, connection){
         if(message){
             const searchResult = await yts(message.options.getString('music')); 
             const stream = await ytdl(searchResult.videos[0].url, { filter: 'audioonly' })
-            if(!this.connection) this.connection = new Connection().connect(message)
     
             this.queue.push({
                 video: searchResult.videos[0],
                 stream: stream
             })
         }
+
+        if(connection) this.connection = connection;
 
         if(!this.playing){
             const resource = createAudioResource(this.queue[0].stream);

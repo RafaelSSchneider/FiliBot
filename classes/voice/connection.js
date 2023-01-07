@@ -4,6 +4,7 @@ const { VoiceConnectionStatus } = require('@discordjs/voice');
 const { getVoiceConnection } = require('@discordjs/voice');
 const ReprodutionController = require("../../controller/voice/reprodutionController");
 
+
 module.exports = class Connection {
     // connect()
     connect(message){

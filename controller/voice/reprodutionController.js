@@ -5,7 +5,9 @@ module.exports = class ReprodutionController {
     
     //criar a instancia 
     static createReprodution(){
-        this.reproduction = new Reprodution()
+        console.log("OIIIIIII")
+
+        // this.reproduction = new Reprodution()
     }
     
     static get reproduction() {

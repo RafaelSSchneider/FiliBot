@@ -4,6 +4,7 @@ const yts = require('yt-search');
 const ytdl = require('ytdl-core');
 
 const Reprodution = require("../../controller/voice/reprodutionController");
+const Connection = require("../../controller/voice/connectionController");
 
 const queue = [];
 
@@ -14,7 +15,8 @@ module.exports = {
         .addStringOption(option => option.setName('music').setDescription('Nome da música').setRequired(true)),
 
     async execute(message) {
-        Reprodution.reproduction.play(message)
+        Connection.createConnection(message)        
+        Reprodution.reproduction.play(message, Connection.connection)
     }
     
     // async execute(message) {
