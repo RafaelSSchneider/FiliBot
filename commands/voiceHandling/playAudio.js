@@ -1,7 +1,8 @@
 const { SlashCommandBuilder, time } = require("discord.js");
 const { createAudioPlayer, createAudioResource, joinVoiceChannel, getVoiceConnection, AudioPlayer, AudioPlayerStatus } = require('@discordjs/voice');
 const yts = require('yt-search');
-const ytsc = require('ytdl-core');
+const ytdl = require('ytdl-core');
+
 const queue = [];
 
 module.exports = {
@@ -11,11 +12,11 @@ module.exports = {
         .addStringOption(option => option.setName('music').setDescription('Nome da música').setRequired(true)),
 
     async execute(message) {
-
         const player = createAudioPlayer();
         const searchResult = await yts(message.options.getString('music')); 
-        const stream = await ytsc(searchResult.videos[0].url, { filter: 'audioonly' });
+        const stream = await ytdl(searchResult.videos[0].url, { filter: 'audioonly' });
         var playing = false;
+
         queue.unshift({
             video: searchResult.videos[0],
             stream: stream
@@ -35,7 +36,7 @@ module.exports = {
                 player.play(resource);
                 connection.subscribe(player);
             }else if(playing === true){
-                let timeout = await ytsc.getBasicInfo(queue[0].video.url).then(info => info.videoDetails.lengthSeconds * 1000);
+                let timeout = await ytdl.getBasicInfo(queue[0].video.url).then(info => info.videoDetails.lengthSeconds * 1000);
                 function playNext(){
                     queue.shift();
                     if(queue.length === 0){

@@ -3,11 +3,14 @@ const fs = require('node:fs');
 const { Collection } = require('discord.js')
 const path = require('node:path');
 const { Client, Events, GatewayIntentBits } = require('discord.js');
-const { token } = require('./config.json');
+const { token, dev } = require('./config.json');
+
+if (!dev){
+	require('./commandDeployment/deployCommands.js');
+}
 
 // Read all directories inside the commands and build they path
 const dir = (fs.readdirSync('./commands').map((item) => '../commands/' + item));
-
 
 // Create a new client instance
 const client = new Client({ intents: [
