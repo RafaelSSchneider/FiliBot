@@ -17,7 +17,7 @@ module.exports = {
 
     async execute(message) {
         
-        // Connection.createConnection(message)   
+        Connection.createConnection(message)   
         const reprodution = new Reprodution()
         reprodution.play(message);
         

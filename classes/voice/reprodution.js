@@ -3,8 +3,7 @@ const { createAudioPlayer, createAudioResource, joinVoiceChannel, getVoiceConnec
 const yts = require('yt-search');
 const ytdl = require('ytdl-core');
 
-const Connection = require("./Connection");
-const ConnectionController = require("../../controller/voice/connectionController");
+// const ConnectionController = require("../../controller/voice/connectionController");
 
 module.exports = class Reprodution {
     queue = [];
@@ -25,10 +24,11 @@ module.exports = class Reprodution {
             })
         }
 
-        // if(!connection) this.connection = connection;
+        if(!connection) this.connection = connection;
 
-        ConnectionController.createConnection(message);
-        if(!connection) this.connection = new Connection().connect(message);
+        // this.connection = new ConnectionController().createConnection(message);
+        
+        // if(!connection) this.connection = new Connection().connect(message);
 
         if(!this.playing){
             const resource = createAudioResource(this.queue[0].stream);
