@@ -1,7 +1,8 @@
 const { SlashCommandBuilder, time } = require("discord.js");
 const { createAudioPlayer, createAudioResource, joinVoiceChannel, getVoiceConnection, AudioPlayer, AudioPlayerStatus } = require('@discordjs/voice');
 const yts = require('yt-search');
-const ytsc = require('ytdl-core');
+const ytdl = require('ytdl-core');
+
 const queue = [];
 
 module.exports = {
@@ -36,7 +37,7 @@ module.exports = {
                 connection.subscribe(player);
                 playing = true;
             }else if(playing === true){
-                let timeout = await ytsc.getBasicInfo(queue[0].video.url).then(info => info.videoDetails.lengthSeconds * 1000);
+                let timeout = await ytdl.getBasicInfo(queue[0].video.url).then(info => info.videoDetails.lengthSeconds * 1000);
                 function playNext(){
                     queue.shift();
                     player.play(resource);
