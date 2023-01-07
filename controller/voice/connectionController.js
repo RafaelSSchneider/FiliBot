@@ -1,11 +1,14 @@
-const Connection = require("../../classes/voice/connection")
+const Connection = require("../../classes/voice/Connection")
 
 module.exports = class ConnectionController {
-    static connection = null
+    connection = null
     
     //criar a instancia 
     static createConnection(message){
-        if (!this.connection) this.connection = new Connection().connect(message)
+        console.log("oiiiii")
+        // if (!this.connection) 
+        this.connection = new Connection().connect(message)
+
     }
     
     static get connection() {

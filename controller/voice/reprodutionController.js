@@ -1,11 +1,13 @@
-const Reprodution = require("../../classes/voice/reprodution")
+const Reprodution = require("../../classes/voice/Reprodution")
 
 module.exports = class ReprodutionController {
-    static reproduction = null
+    static reproduction = "null"
     
     //criar a instancia 
-    static createReprodution(){
+    static createReprodution(teste){
         console.log("OIIIIIII")
+        console.log(teste)
+        
 
         // this.reproduction = new Reprodution()
     }
@@ -18,6 +20,18 @@ module.exports = class ReprodutionController {
 
 
 
+// const Connection = require("../../classes/voice/connection")
 
-
+// module.exports = class ConnectionController {
+//     static connection = null
+    
+//     //criar a instancia 
+//     static createConnection(message){
+//         if (!this.connection) this.connection = new Connection().connect(message)
+//     }
+    
+//     static get connection() {
+//         return this.connection
+//     }
+// }
 
