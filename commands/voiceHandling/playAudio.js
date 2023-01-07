@@ -16,7 +16,7 @@ module.exports = {
         const searchResult = await yts(message.options.getString('music')); 
         const stream = await ytsc(searchResult.videos[0].url, { filter: 'audioonly' });
         var playing = false;
-        queue.unshift({
+        queue.push({
             video: searchResult.videos[0],
             stream: stream
         });
@@ -34,35 +34,31 @@ module.exports = {
                 //message.reply('Tocando a musica: ' + queue[0].video.title);
                 player.play(resource);
                 connection.subscribe(player);
+                playing = true;
             }else if(playing === true){
                 let timeout = await ytsc.getBasicInfo(queue[0].video.url).then(info => info.videoDetails.lengthSeconds * 1000);
                 function playNext(){
                     queue.shift();
+                    player.play(resource);
+                    connection.subscribe(player);
                     if(queue.length === 0){
                         playing = false;
                         return;
                     }
-                    player.play(resource);
-                    connection.subscribe(player);
                 }
                 if(queue.length > 0){
                     setTimeout(playNext, timeout);
                 }else{
-                    playing = false;
-                    return;
                 }
-                player.play(resource);
-                connection.subscribe(player);
+
             }
     };
 
         const connected = connection ? true : false;
         if(connected){
-            playing = true;
             playMusic();
         }else{
             connect;
-            playing = false;
             playMusic();
         }
 
