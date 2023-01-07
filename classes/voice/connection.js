@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require("discord.js");
 const { joinVoiceChannel } = require('@discordjs/voice');
 const { VoiceConnectionStatus } = require('@discordjs/voice');
 const { getVoiceConnection } = require('@discordjs/voice');
+const ReprodutionController = require("../../controller/voice/reprodutionController");
 
 module.exports = class Connection {
     // connect()
@@ -20,6 +21,8 @@ module.exports = class Connection {
                 guildId: message.guildId,
                 adapterCreator: message.guild.voiceAdapterCreator,
             });
+
+            ReprodutionController.createReprodution();
 
             message.reply('Entrei juntinho de voce arrombado')
             return connection;
