@@ -1,4 +1,3 @@
-
 const { SlashCommandBuilder } = require("discord.js");
 const { joinVoiceChannel } = require('@discordjs/voice');
 const { VoiceConnectionStatus } = require('@discordjs/voice');
