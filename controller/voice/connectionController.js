@@ -15,6 +15,7 @@ module.exports = class ConnectionController {
     
     //criar a instancia 
     static connect(message){
+
         const userOnChannel = message.member
         
         if(!userOnChannel.voice.channelId){
@@ -23,15 +24,15 @@ module.exports = class ConnectionController {
         }else{
             // if(getVoiceConnection(message.guildId))
             //     return message.reply('Ja to numa call')
-                
+            if(!getVoiceConnection(message.guildId)){
+                message.reply('Entrei juntinho de voce arrombado')
+            }
             const connection = joinVoiceChannel({
                 channelId: message.member.voice.channelId,
                 guildId: message.guildId,
                 adapterCreator: message.guild.voiceAdapterCreator,
             });
-
-            message.reply('Entrei juntinho de voce arrombado')
-            return connection;
+            return connection
         }
 
 
@@ -47,7 +48,6 @@ module.exports = class ConnectionController {
     static get connection() {
         return this.connection
     }
-
 
 }
 

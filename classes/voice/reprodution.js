@@ -3,6 +3,7 @@ const { createAudioPlayer, createAudioResource, joinVoiceChannel, getVoiceConnec
 const yts = require('yt-search');
 const ytdl = require('ytdl-core');
 const { client } = require("../..");
+const ConnectionController = require("../../controller/voice/connectionController");
 
 // const ConnectionController = require("../../controller/voice/connectionController");
 
@@ -15,7 +16,9 @@ module.exports = class Reprodution {
     
     // play()
     async play(message, connection){
-        if(message){
+        //console.log(message);
+        
+        if(message != undefined && message.hasOwnProperty('options') && message.options.getString('music') != undefined){
             const searchResult = await yts(message.options.getString('music')); 
             const stream = await ytdl(searchResult.videos[0].url, { filter: 'audioonly' })
     
@@ -30,15 +33,32 @@ module.exports = class Reprodution {
         if(!this.connection) this.connection = connection;
 
         if(!this.playing){
-            const resource = createAudioResource(this.queue[0].stream);
-    
-            // channel.send('Tocando a musica: ' + this.queue[0].video.title);
+            //await ytdl.getBasicInfo(this.queue[0].video.url).then(info => info.videoDetails.lengthSeconds * 1000)
+            setTimeout(() => {
+                this.queue.shift()
+                const resource = createAudioResource(this.queue[0].stream);
+                this.playing = true;
+                this.player.play(resource);
+                this.connection.subscribe(this.player);
+            },await ytdl.getBasicInfo(this.queue[0].video.url).then(info => info.videoDetails.lengthSeconds * 1000 + 1000))
             
+            const resource = createAudioResource(this.queue[0].stream);
+
+            if(this.connection && message != undefined){
+                //message.followUp(('tocando agora na radio eldorado: ' + this.queue[0].video.title))
+            }
+
+
+
             this.playing = true;
             this.player.play(resource);
             this.connection.subscribe(this.player);
         }
-
+        if(this.queue.length > 1){
+            if(this.connection){
+                message.reply('Adicionado a fila: ' + this.queue[this.queue.length - 1].video.title)
+            }
+        }
         console.log("Queue: ")
         console.log(this.queue.map(file => file.video.title))
     };
@@ -50,11 +70,13 @@ module.exports = class Reprodution {
     }
 
     // skip()
-    skip(){
+    skip(message){
         this.stop()
         this.playing = false
-        this.queue.shift()
-        this.play()
+        if(this.queue.length > 0){
+            this.queue.shift()
+            this.play(message)
+        }
     }
     
     // stop()

@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, time } = require("discord.js");
+const { SlashCommandBuilder, time, Message } = require("discord.js");
 const { createAudioPlayer, createAudioResource, joinVoiceChannel, getVoiceConnection, AudioPlayer, AudioPlayerStatus } = require('@discordjs/voice');
 const yts = require('yt-search');
 const ytdl = require('ytdl-core');
@@ -9,9 +9,8 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('skip')
         .setDescription('Pula pula'),
-
-    async execute() {
-        ReprodutionController.reprodution.skip()
+    async execute(message) {
+        ReprodutionController.reprodution.skip(message)
     }
     
 };
