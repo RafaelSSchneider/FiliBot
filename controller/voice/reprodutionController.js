@@ -1,4 +1,4 @@
-const Reprodution = require("../../classes/voice/Reprodution")
+const Reprodution = require("../../classes/voice/reprodution")
 
 module.exports = class ReprodutionController {
     static reprodution = null
