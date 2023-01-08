@@ -9,7 +9,6 @@ module.exports = class Reprodution {
     queue = [];
     playing = false
 
-    player = createAudioPlayer();
     connection = null
     
     // play()
@@ -24,7 +23,7 @@ module.exports = class Reprodution {
             })
         }
 
-        if(!connection) this.connection = connection;
+        if(!this.connection) this.connection = connection;
 
         // this.connection = new ConnectionController().createConnection(message);
         
@@ -54,6 +53,10 @@ module.exports = class Reprodution {
     skip(){
         this.stop();
         this.playing = false;
+        if(this.queue.length === 0) {
+        console.log("queue vazia");
+        return;
+        }
         this.queue.shift();
         this.play();
     }

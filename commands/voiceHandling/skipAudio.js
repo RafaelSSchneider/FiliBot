@@ -3,7 +3,7 @@ const { createAudioPlayer, createAudioResource, joinVoiceChannel, getVoiceConnec
 const yts = require('yt-search');
 const ytdl = require('ytdl-core');
 
-const Reprodution = require("../../controller/voice/reprodutionController");
+const Reprodution = require("../../classes/voice/reprodution");
 
 //skip ta quebrado
 

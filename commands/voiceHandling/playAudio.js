@@ -5,7 +5,7 @@ const ytdl = require('ytdl-core');
 
 const ReprodutionController = require("../../controller/voice/reprodutionController");
 const Connection = require("../../controller/voice/connectionController");
-const Reprodution = require("../../classes/voice/Reprodution");
+const Reprodution = require("../../classes/voice/reprodution");
 
 const queue = [];
 
@@ -17,9 +17,8 @@ module.exports = {
 
     async execute(message) {
         
-        Connection.createConnection(message)   
         const reprodution = new Reprodution()
-        reprodution.play(message);
+        reprodution.play(message, Connection.connect(message));
         
         // Reprodution.reproduction.play(message, Connection.connection)
     }
