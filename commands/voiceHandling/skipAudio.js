@@ -3,12 +3,7 @@ const { createAudioPlayer, createAudioResource, joinVoiceChannel, getVoiceConnec
 const yts = require('yt-search');
 const ytdl = require('ytdl-core');
 
-const Reprodution = require("../../classes/voice/reprodution");
-
-//skip ta quebrado
-
-//isso ta quebrado preciso achar um lugar universal para instanciar essa merda
-const reproduction = new Reprodution()
+const ReprodutionController = require("../../controller/voice/reprodutionController");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -16,7 +11,7 @@ module.exports = {
         .setDescription('Pula pula'),
 
     async execute() {
-        reproduction.skip()
+        ReprodutionController.reprodution.skip()
     }
     
 };

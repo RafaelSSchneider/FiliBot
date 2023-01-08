@@ -1,19 +1,15 @@
 const Reprodution = require("../../classes/voice/Reprodution")
 
 module.exports = class ReprodutionController {
-    static reproduction = "null"
+    static reprodution = null
     
     //criar a instancia 
-    static createReprodution(teste){
-        console.log("OIIIIIII")
-        console.log(teste)
-        
-
-        // this.reproduction = new Reprodution()
+    static createReprodution(){
+        this.reprodution = new Reprodution()
     }
     
-    static get reproduction() {
-        return this.reproduction
+    static get reprodution() {
+        return this.reprodution
     }
 }
 

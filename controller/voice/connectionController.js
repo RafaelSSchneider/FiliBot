@@ -21,8 +21,8 @@ module.exports = class ConnectionController {
             message.reply("Entra no canal cara")
 
         }else{
-            if(getVoiceConnection(message.guildId))
-                return message.reply('Ja to numa call')
+            // if(getVoiceConnection(message.guildId))
+            //     return message.reply('Ja to numa call')
                 
             const connection = joinVoiceChannel({
                 channelId: message.member.voice.channelId,
@@ -33,6 +33,8 @@ module.exports = class ConnectionController {
             message.reply('Entrei juntinho de voce arrombado')
             return connection;
         }
+
+
     }
     
     // disconnect()

@@ -2,6 +2,7 @@ const { SlashCommandBuilder, time } = require("discord.js");
 const { createAudioPlayer, createAudioResource, joinVoiceChannel, getVoiceConnection, AudioPlayer, AudioPlayerStatus } = require('@discordjs/voice');
 const yts = require('yt-search');
 const ytdl = require('ytdl-core');
+const { client } = require("../..");
 
 // const ConnectionController = require("../../controller/voice/connectionController");
 
@@ -9,6 +10,7 @@ module.exports = class Reprodution {
     queue = [];
     playing = false
 
+    player = createAudioPlayer();
     connection = null
     
     // play()
@@ -17,6 +19,8 @@ module.exports = class Reprodution {
             const searchResult = await yts(message.options.getString('music')); 
             const stream = await ytdl(searchResult.videos[0].url, { filter: 'audioonly' })
     
+            // channel = client.channels.cache.get(message.channelId)
+
             this.queue.push({
                 video: searchResult.videos[0],
                 stream: stream
@@ -25,20 +29,14 @@ module.exports = class Reprodution {
 
         if(!this.connection) this.connection = connection;
 
-        // this.connection = new ConnectionController().createConnection(message);
-        
-        // if(!connection) this.connection = new Connection().connect(message);
-
         if(!this.playing){
             const resource = createAudioResource(this.queue[0].stream);
     
-            //message.reply('Tocando a musica: ' + searchResult.title);
+            // channel.send('Tocando a musica: ' + this.queue[0].video.title);
+            
             this.playing = true;
             this.player.play(resource);
             this.connection.subscribe(this.player);
-
-        }else{
-            this.skip();
         }
 
         console.log("Queue: ")
@@ -47,18 +45,16 @@ module.exports = class Reprodution {
 
 
     // pause()
-
+    pause(){
+        this.player.pause()
+    }
 
     // skip()
     skip(){
-        this.stop();
-        this.playing = false;
-        if(this.queue.length === 0) {
-        console.log("queue vazia");
-        return;
-        }
-        this.queue.shift();
-        this.play();
+        this.stop()
+        this.playing = false
+        this.queue.shift()
+        this.play()
     }
     
     // stop()
