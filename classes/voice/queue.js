@@ -118,7 +118,7 @@ module.exports = class Queue {
         clearTimeout(this.timmingPlaying);
     }
 
-    get queue(){
+    toString(){
         return this.queue;
     }
 }

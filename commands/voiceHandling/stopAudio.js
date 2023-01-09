@@ -1,5 +1,5 @@
 const { SlashCommandBuilder} = require("discord.js");
-const ReprodutionController = require("../../controller/voice/queueController");
+const QueueController = require("../../controller/voice/queueController");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -7,7 +7,7 @@ module.exports = {
         .setDescription('PARA TUDO'),
  
     async execute(message) {
-        ReprodutionController.queue.stop()
+        QueueController.queue.stop()
         message.reply({ content: 'CABOU SAPORRA' })
     }
 };

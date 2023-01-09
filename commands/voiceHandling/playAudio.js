@@ -3,7 +3,7 @@ const { createAudioPlayer, createAudioResource, joinVoiceChannel, getVoiceConnec
 const yts = require('yt-search');
 const ytdl = require('ytdl-core');
 
-const ReprodutionController = require("../../controller/voice/reprodutionController");
+const QueueController = require("../../controller/voice/QueueController");
 const Connection = require("../../controller/voice/connectionController");
 
 module.exports = {
@@ -13,7 +13,7 @@ module.exports = {
         .addStringOption(option => option.setName('music').setDescription('Nome da música').setRequired(true)),
 
     async execute(message) {
-        if(!ReprodutionController.queue) ReprodutionController.createReprodution();
-        ReprodutionController.queue.play(message, Connection.connect(message))
+        if(!QueueController.queue) QueueController.createQueue();
+        QueueController.queue.play(message, Connection.connect(message))
     }
 };

@@ -1,5 +1,5 @@
 const { SlashCommandBuilder} = require("discord.js");
-const ReprodutionController = require("../../controller/voice/queueController");
+const QueueController = require("../../controller/voice/queueController");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -7,7 +7,7 @@ module.exports = {
         .setDescription('Quer saber oq ta tocando?'),
  
     async execute(message) {
-        ReprodutionController.queue.queue
+        QueueController.queue.queue
         message.reply({ content: 'CABOU SAPORRA' })
     }
 };
