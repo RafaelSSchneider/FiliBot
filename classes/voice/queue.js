@@ -12,19 +12,16 @@ const row = new ActionRowBuilder()
             .setLabel('Clica para pular')
             .setStyle(ButtonStyle.Primary))
 
-
-
-module.exports = class Reprodution {
+module.exports = class Queue {
     queue = [];
     playing = false
-
     player = createAudioPlayer();
-    connection = null
+    timmingPlaying = undefined
+
+    connection = undefined
 
     async play(message, connection) {
-
         //verifica se a mensagem contém alguma musica, se tiver irá pesquisar ela no youtube e adicionar a queue
-
         if (message != undefined && message.hasOwnProperty('options') && message.options.getString('music') != undefined) {
             const searchResult = await yts(message.options.getString('music'));
             const stream = await ytdl(searchResult.videos[0].url, { filter: 'audioonly' })
@@ -37,20 +34,23 @@ module.exports = class Reprodution {
         }
 
         //cria a conexão com o canal de voz
-
         if (!this.connection) this.connection = connection;
 
         //verifica se está tocando alguma musica, se estiver, irá iniciar um timer para a troca de musica ((to-do) se ouver)
         //e enviará enviar um Embed da musica atual 
-
         if (!this.playing) {
-            setTimeout(() => {
+            const musicDuration = await ytdl.getBasicInfo(this.queue[0].video.url).then(info => info.videoDetails.lengthSeconds * 1000 + 1000)
+
+            // tocar proxima musica
+            this.timmingPlaying = setTimeout(() => {
                 this.queue.shift()
                 const resource = createAudioResource(this.queue[0].stream);
                 this.playing = true;
                 this.player.play(resource);
                 this.connection.subscribe(this.player);
-            }, await ytdl.getBasicInfo(this.queue[0].video.url).then(info => info.videoDetails.lengthSeconds * 1000 + 1000))
+
+                return clearTimeout(this.timmingPlaying);
+            }, musicDuration)
 
             const resource = createAudioResource(this.queue[0].stream);
             if (this.connection && message != undefined) {
@@ -72,7 +72,6 @@ module.exports = class Reprodution {
             }
 
             //inicia a reprodução da musica, setando o playing e sobrescrevendo a conexão
-
             this.playing = true;
             this.player.play(resource);
             this.connection.subscribe(this.player);
@@ -90,6 +89,7 @@ module.exports = class Reprodution {
                 })
             }
         }
+        
         console.log("Queue: ")
         console.log(this.queue.map(file => file.video.title))
     };
@@ -104,6 +104,7 @@ module.exports = class Reprodution {
     skip(message) {
         this.stop()
         this.playing = false
+        clearTimeout(this.timmingPlaying);
         if (this.queue.length > 0) {
             this.queue.shift()
             this.play(message)
@@ -113,6 +114,11 @@ module.exports = class Reprodution {
     // stop()
     stop() {
         this.player.stop()
+        this.playing = false
+        clearTimeout(this.timmingPlaying);
     }
 
+    get queue(){
+        return this.queue;
+    }
 }

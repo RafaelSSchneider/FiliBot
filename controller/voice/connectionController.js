@@ -5,7 +5,7 @@ const { joinVoiceChannel } = require('@discordjs/voice');
 const { VoiceConnectionStatus } = require('@discordjs/voice');
 const { getVoiceConnection } = require('@discordjs/voice');
 // const { reproduction } = require("../../controller/voice/reprodutionController");
-const ReprodutionController = require("../../controller/voice/reprodutionController");
+const ReprodutionController = require("./queueController");
 const ConnectionController = require("../../controller/voice/connectionController");
 
 

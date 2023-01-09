@@ -10,7 +10,7 @@ module.exports = {
         .setName('skip')
         .setDescription('Pula pula'),
     async execute(message) {
-        ReprodutionController.reprodution.skip(message)
+        ReprodutionController.queue.skip(message)
     }
     
 };

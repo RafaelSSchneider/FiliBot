@@ -1,15 +1,15 @@
-const Reprodution = require("../../classes/voice/Reprodution")
+const Queue = require("../../classes/voice/queue")
 
 module.exports = class ReprodutionController {
-    static reprodution = null
+    static queue = null
     
     //criar a instancia 
     static createReprodution(){
-        this.reprodution = new Reprodution()
+        this.queue = new Queue()
     }
     
-    static get reprodution() {
-        return this.reprodution
+    static get queue() {
+        return this.queue
     }
 }
 

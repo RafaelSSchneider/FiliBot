@@ -13,7 +13,7 @@ module.exports = {
         .addStringOption(option => option.setName('music').setDescription('Nome da música').setRequired(true)),
 
     async execute(message) {
-        if(!ReprodutionController.reprodution) ReprodutionController.createReprodution();
-        ReprodutionController.reprodution.play(message, Connection.connect(message))
+        if(!ReprodutionController.queue) ReprodutionController.createReprodution();
+        ReprodutionController.queue.play(message, Connection.connect(message))
     }
 };
