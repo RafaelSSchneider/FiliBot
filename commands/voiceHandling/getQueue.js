@@ -7,7 +7,6 @@ module.exports = {
         .setDescription('Quer saber oq ta tocando?'),
  
     async execute(message) {
-        QueueController.queue.queue
-        message.reply({ content: 'CABOU SAPORRA' })
+        message.reply({ content: QueueController.queue.toString() })
     }
 };

@@ -25,11 +25,12 @@ module.exports = class Queue {
         if (message != undefined && message.hasOwnProperty('options') && message.options.getString('music') != undefined) {
             const searchResult = await yts(message.options.getString('music'));
             const stream = await ytdl(searchResult.videos[0].url, { filter: 'audioonly' })
-
+            const musicDuration = await ytdl.getBasicInfo(searchResult.videos[0].url).then(info => info.videoDetails.lengthSeconds * 1000 + 1000)
 
             this.queue.push({
                 video: searchResult.videos[0],
-                stream: stream
+                stream: stream,
+                duration: musicDuration,
             })
         }
 
@@ -39,7 +40,6 @@ module.exports = class Queue {
         //verifica se está tocando alguma musica, se estiver, irá iniciar um timer para a troca de musica ((to-do) se ouver)
         //e enviará enviar um Embed da musica atual 
         if (!this.playing) {
-            const musicDuration = await ytdl.getBasicInfo(this.queue[0].video.url).then(info => info.videoDetails.lengthSeconds * 1000 + 1000)
 
             // tocar proxima musica
             this.timmingPlaying = setTimeout(() => {
@@ -50,7 +50,7 @@ module.exports = class Queue {
                 this.connection.subscribe(this.player);
 
                 return clearTimeout(this.timmingPlaying);
-            }, musicDuration)
+            }, this.queue[0].duration)
 
             const resource = createAudioResource(this.queue[0].stream);
             if (this.connection && message != undefined) {
@@ -119,6 +119,6 @@ module.exports = class Queue {
     }
 
     toString(){
-        return this.queue;
+        return this.queue.map(file => file.video.title).toString();
     }
 }

@@ -1,9 +1,5 @@
-const { SlashCommandBuilder, time } = require("discord.js");
-const { createAudioPlayer, createAudioResource, joinVoiceChannel, getVoiceConnection, AudioPlayer, AudioPlayerStatus } = require('@discordjs/voice');
-const yts = require('yt-search');
-const ytdl = require('ytdl-core');
-
-const QueueController = require("../../controller/voice/QueueController");
+const { SlashCommandBuilder } = require("discord.js");
+const QueueController = require("../../controller/voice/queueController");
 const Connection = require("../../controller/voice/connectionController");
 
 module.exports = {
