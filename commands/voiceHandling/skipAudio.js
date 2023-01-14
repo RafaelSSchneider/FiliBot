@@ -3,14 +3,14 @@ const { createAudioPlayer, createAudioResource, joinVoiceChannel, getVoiceConnec
 const yts = require('yt-search');
 const ytdl = require('ytdl-core');
 
-const ReprodutionController = require("../../controller/voice/reprodutionController");
+const QueueController = require("../../controller/voice/QueueController");
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('skip')
         .setDescription('Pula pula'),
     async execute(message) {
-        ReprodutionController.reprodution.skip(message)
+        QueueController.queue.skip(message)
     }
     
 };

@@ -8,46 +8,43 @@ const {Events } = require('discord.js');
 module.exports = class Reprodution {
     queue = [];
     playing = false
-
     player = createAudioPlayer();
-    connection = null
+    timmingPlaying = undefined
+
+    connection = undefined
 
     async play(message, connection) {
         const channel = message.client.channels.cache.get(message.channelId)
         //verifica se a mensagem contém alguma musica, se tiver irá pesquisar ela no youtube e adicionar a queue
-
         if (message != undefined && message.hasOwnProperty('options') && message.options.getString('music') != undefined) {
             const searchResult = await yts(message.options.getString('music'));
             const stream = await ytdl(searchResult.videos[0].url, { filter: 'audioonly' })
-
+            const musicDuration = await ytdl.getBasicInfo(searchResult.videos[0].url).then(info => info.videoDetails.lengthSeconds * 1000 + 1000)
 
             this.queue.push({
                 video: searchResult.videos[0],
-                stream: stream
+                stream: stream,
+                duration: musicDuration,
             })
         }
 
         //cria a conexão com o canal de voz
-
         if (!this.connection) this.connection = connection;
 
         //verifica se está tocando alguma musica, se estiver, irá iniciar um timer para a troca de musica (se ouver)
         //e enviará enviar um Embed da musica atual 
-
         if (!this.playing) {
-            if (this.queue.length > 1) {
-                setTimeout(() => {
-                    this.queue.shift()
-                    const resource = createAudioResource(this.queue[0].stream);
-                    this.playing = true;
-                    this.player.play(resource);
-                    this.connection.subscribe(this.player);
-                }, await ytdl.getBasicInfo(this.queue[0].video.url).then(info => info.videoDetails.lengthSeconds * 1000 + 1000))
-            } else {
-                console.log("Não tem mais musicas na queue")
-            }
 
+            // tocar proxima musica
+            this.timmingPlaying = setTimeout(() => {
+                this.queue.shift()
+                const resource = createAudioResource(this.queue[0].stream);
+                this.playing = true;
+                this.player.play(resource);
+                this.connection.subscribe(this.player);
 
+                return clearTimeout(this.timmingPlaying);
+            }, this.queue[0].duration)
 
             const resource = createAudioResource(this.queue[0].stream);
             if (this.connection && message != undefined) {
@@ -75,6 +72,7 @@ module.exports = class Reprodution {
                 })
             }
         }
+        
         console.log("Queue: ")
         console.log(this.queue.map(file => file.video.title))
     };
@@ -87,7 +85,10 @@ module.exports = class Reprodution {
 
     // skip()
     skip(message) {
-        if(this.queue.length > 1){
+        this.stop()
+        this.playing = false
+        clearTimeout(this.timmingPlaying);
+        if (this.queue.length > 0) {
             this.queue.shift()
             this.playing = false
             this.play(message, this.connection)
@@ -100,6 +101,11 @@ module.exports = class Reprodution {
     // stop()
     stop() {
         this.player.stop()
+        this.playing = false
+        clearTimeout(this.timmingPlaying);
     }
 
+    toString(){
+        return this.queue.map(file => file.video.title).toString();
+    }
 }
