@@ -1,18 +1,9 @@
-const { createAudioPlayer, createAudioResource, joinVoiceChannel, getVoiceConnection, AudioPlayer, AudioPlayerStatus } = require('@discordjs/voice');
+const { createAudioPlayer, createAudioResource} = require('@discordjs/voice');
 const yts = require('yt-search');
 const ytdl = require('ytdl-core');
-const { client } = require("../..");
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Events } = require('discord.js');
-const { EmbedBuilder } = require('discord.js');
-
-const row = new ActionRowBuilder()
-    .addComponents(
-        new ButtonBuilder()
-            .setCustomId('primary')
-            .setLabel('Clica para pular')
-            .setStyle(ButtonStyle.Primary))
-
-
+const { musicEmbed } = require('../../messages/queue/musicEmbed');
+const { playlistEmbed } = require('../../messages/queue/playlistEmbed');
+const {Events } = require('discord.js');
 
 module.exports = class Reprodution {
     queue = [];
@@ -22,7 +13,7 @@ module.exports = class Reprodution {
     connection = null
 
     async play(message, connection) {
-
+        const channel = message.client.channels.cache.get(message.channelId)
         //verifica se a mensagem contém alguma musica, se tiver irá pesquisar ela no youtube e adicionar a queue
 
         if (message != undefined && message.hasOwnProperty('options') && message.options.getString('music') != undefined) {
@@ -40,39 +31,30 @@ module.exports = class Reprodution {
 
         if (!this.connection) this.connection = connection;
 
-        //verifica se está tocando alguma musica, se estiver, irá iniciar um timer para a troca de musica ((to-do) se ouver)
+        //verifica se está tocando alguma musica, se estiver, irá iniciar um timer para a troca de musica (se ouver)
         //e enviará enviar um Embed da musica atual 
 
         if (!this.playing) {
-            setTimeout(() => {
-                this.queue.shift()
-                const resource = createAudioResource(this.queue[0].stream);
-                this.playing = true;
-                this.player.play(resource);
-                this.connection.subscribe(this.player);
-            }, await ytdl.getBasicInfo(this.queue[0].video.url).then(info => info.videoDetails.lengthSeconds * 1000 + 1000))
+            if (this.queue.length > 1) {
+                setTimeout(() => {
+                    this.queue.shift()
+                    const resource = createAudioResource(this.queue[0].stream);
+                    this.playing = true;
+                    this.player.play(resource);
+                    this.connection.subscribe(this.player);
+                }, await ytdl.getBasicInfo(this.queue[0].video.url).then(info => info.videoDetails.lengthSeconds * 1000 + 1000))
+            } else {
+                console.log("Não tem mais musicas na queue")
+            }
+
+
 
             const resource = createAudioResource(this.queue[0].stream);
             if (this.connection && message != undefined) {
-
-
-                //cria o embed com a musica atual
-                const musicEmbed = new EmbedBuilder()
-                .setColor(0x0099FF)
-                .setTitle('Tocando agora :musical_note: \n' + this.queue[0].video.title)
-                .setURL(this.queue[0].video.url)
-                .setDescription("Pedido por: " + message.user.username)
-                .setThumbnail(await ytdl.getBasicInfo(this.queue[0].video.url).then(info => info.videoDetails.thumbnails[0].url));
-
-
-                //pega o channel ID do canal que o comando foi executado
-                const channel = message.client.channels.cache.get(message.channelId)
-                channel.send({ embeds: [musicEmbed] });
-
+                musicEmbed(message, this.queue[0], channel);
             }
 
             //inicia a reprodução da musica, setando o playing e sobrescrevendo a conexão
-
             this.playing = true;
             this.player.play(resource);
             this.connection.subscribe(this.player);
@@ -82,11 +64,14 @@ module.exports = class Reprodution {
         //e irá adicionar um botão para pular a musica
         if (this.queue.length > 1) {
             if (this.connection) {
-                message.reply({ content: 'Adicionado a fila' + this.queue[this.queue.length - 1].video.title, components: [row] })
+
+                const icon = message.user.displayAvatarURL({ size: 1024, dynamic: true });
+                playlistEmbed(message, this.queue[this.queue.length - 1], channel, icon);
                 message.client.on(Events.InteractionCreate, interaction => {
                     if (!interaction.isButton()) return;
-                    interaction.reply('Pulando musica')
-                    this.skip(message);
+                    if(this.queue.length > 1){
+                        this.skip(message);
+                    }
                 })
             }
         }
@@ -102,11 +87,13 @@ module.exports = class Reprodution {
 
     // skip()
     skip(message) {
-        this.stop()
-        this.playing = false
-        if (this.queue.length > 0) {
+        if(this.queue.length > 1){
             this.queue.shift()
-            this.play(message)
+            this.playing = false
+            this.play(message, this.connection)
+        }else{
+            this.playing = false
+            this.stop()
         }
     }
 
