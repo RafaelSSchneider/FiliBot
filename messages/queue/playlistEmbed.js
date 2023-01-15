@@ -1,7 +1,6 @@
 //embed para a playlist toda (queue);
 const ytdl = require('ytdl-core');
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Events } = require('discord.js');
-const ReprodutionController = require("../../controller/voice/reprodutionController");
 
 const row = new ActionRowBuilder()
     .addComponents(
