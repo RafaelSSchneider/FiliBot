@@ -1,5 +1,6 @@
 const lista = require('../../controller/SteamSales/listController.js')
 const { SlashCommandBuilder } = require("discord.js");
+const { listEmbed } = require('../../messages/steamSale/listEmbed.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -7,17 +8,20 @@ module.exports = {
         .setDescription('Mostra a lista de desejos'),
 
     async execute(message) {
-        const listaData = await lista.list.map((game) => {
+        const channel = message.client.channels.cache.get(message.channelId)
+        
+        const listaData = lista.list.map((game) => {
             return {
                 name: game.Game,
                 value: game.Price.final_formatted,
-                user: game.User
+                users: game.message.user.tag,
             }
         })
-        console.log(listaData)
+
         message.deferReply();
-        setTimeout(() => {
-            message.editReply({ content: 'Lista de desejos', embeds: [{ fields: listaData }] })
-        }, 1000)
+        setTimeout(async () => {
+            listEmbed(listaData, channel)
+            message.deleteReply();
+        }, 2000)
     }
 }

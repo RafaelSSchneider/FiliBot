@@ -23,8 +23,8 @@ module.exports = {
                 message.editReply('Jogo não encontrado');
             }, 1000);
         }else{
-            lista.listAdd(result, message.user)
             message.deferReply();
+            await lista.listAdd(result, message)
             await setTimeout(() => {
                 message.editReply(`Jogo adicionado a lista de desejos: ${result.name} por ${message.user}`);
             }, 1000);
