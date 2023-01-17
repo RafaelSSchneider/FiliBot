@@ -4,8 +4,7 @@ const { SlashCommandBuilder } = require("discord.js");
 const { joinVoiceChannel } = require('@discordjs/voice');
 const { VoiceConnectionStatus } = require('@discordjs/voice');
 const { getVoiceConnection } = require('@discordjs/voice');
-// const { reproduction } = require("../../controller/voice/reprodutionController");
-const ReprodutionController = require("../../controller/voice/reprodutionController");
+const QueueController = require("./queueController");
 const ConnectionController = require("../../controller/voice/connectionController");
 
 
@@ -22,11 +21,6 @@ module.exports = class ConnectionController {
             message.reply("Entra no canal cara")
 
         }else{
-            // if(getVoiceConnection(message.guildId))
-            //     return message.reply('Ja to numa call')
-            if(!getVoiceConnection(message.guildId)){
-                message.reply('Entrei juntinho de voce arrombado')
-            }
             const connection = joinVoiceChannel({
                 channelId: message.member.voice.channelId,
                 guildId: message.guildId,

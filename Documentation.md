@@ -1,4 +1,4 @@
-# reprodution
+# queue
 
 Armazena os comandos de reprodução de audio, iniciando a musica, parando e pulando as músicas
 
@@ -6,7 +6,7 @@ Armazena os comandos de reprodução de audio, iniciando a musica, parando e pul
 
 Controla os estados da conexão, criando quando necessário ou parando quando chamado
 
-# reprodutionController
+# queueController
 
 Controla a reprodução vigente (verificando se possui uma reprodução instanciada)
 
