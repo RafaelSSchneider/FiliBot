@@ -17,11 +17,14 @@ module.exports = {
                 users: game.message.user.tag,
             }
         })
-
-        message.deferReply();
-        setTimeout(async () => {
-            listEmbed(listaData, channel)
-            message.deleteReply();
-        }, 2000)
+        if(listaData.length == 0){
+            message.reply({ content: "Não há jogos na lista" })
+        }else{
+            message.deferReply();
+            setTimeout(async () => {
+                listEmbed(listaData, channel)
+                message.deleteReply();
+            }, 2000)
+        }
     }
 }

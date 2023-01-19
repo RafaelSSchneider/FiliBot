@@ -8,7 +8,7 @@ const QueueController = require("../../controller/voice/QueueController");
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('skip')
-        .setDescription('Pula pula'),
+        .setDescription('Pula a musica atual'),
     async execute(message) {
         QueueController.queue.skip(message)
     }

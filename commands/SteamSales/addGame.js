@@ -18,14 +18,14 @@ module.exports = {
         const result = search.applist.apps.find(app => app.name === game);
         
         if(!result){
-            message.deferReply('');
+            message.deferReply();
             await setTimeout(() => {
                 message.editReply('Jogo não encontrado');
             }, 1000);
         }else{
             message.deferReply();
             await lista.listAdd(result, message)
-            await setTimeout(() => {
+            setTimeout(() => {
                 message.editReply(`Jogo adicionado a lista de desejos: ${result.name} por ${message.user}`);
             }, 1000);
         }

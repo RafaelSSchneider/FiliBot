@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const channelController = require('./channelController');
 
 
 
@@ -41,11 +42,13 @@ module.exports = class listController{
             const getNewData = await fetch('http://store.steampowered.com/api/appdetails/?appids=' + this.gamesId[i] + "&cc=BRL").then(response => response.json());
             if(getNewData[this.gamesId[i]].data.price_overview.final > this.list[i].Price.final){
                 this.list[i].Price.final = getNewData[this.gamesId[i]].data.price_overview.final
+            }else{
+                this.list[i].Price.final = this.list[i].Price.final;    
             }
         }
-        console.log("ATUALIZEI A LISTA")
     }
 }
+
     static listNotifier(){
         const listaData = this.list.map((game) => {
             return {
@@ -60,7 +63,7 @@ module.exports = class listController{
             listaData[0].value.final = 10;
             for(let i = 0; i < listaData.length; i++){
                 if(listaData[i].value.initial > listaData[i].value.final){
-                    console.log('Mudou de preço')
+                    channelController.channel.send(`O jogo ${listaData[i].name} está com desconto de ${listaData[i].value.initial - listaData[i].value.final} reais`);
                 }
             }
         }
