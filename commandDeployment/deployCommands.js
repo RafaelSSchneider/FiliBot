@@ -1,45 +1,47 @@
 const { REST, Routes } = require('discord.js');
 const { clientId, guildId, token } = require('../config.json');
 const fs = require('node:fs');
+const path = require('node:path');
 
-// Read all directories inside the commands and build they path
-const dir = (fs.readdirSync('./commands').map((item) => item));
 
 const commands = [];
+// Grab all the command folders from the commands directory
+const foldersPath = path.join(__dirname, '../commands');
+const commandFolders = fs.readdirSync(foldersPath);
 
-// Grab all the command files fArom the commands directory you created earlier
-for(const directiories of dir){
-	const commandFiles = (fs.readdirSync(`./commands/${directiories}`).filter(file => file.endsWith('.js')));
-
+for (const folder of commandFolders) {
+	// Grab all the command files from the commands directory
+	const commandsPath = path.join(foldersPath, folder);
+	const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+	// Grab the SlashCommandBuilder#toJSON() output of each command's data for deployment
 	for (const file of commandFiles) {
-		// Grab the SlashCommandBuilder#toJSON() output of each command's data for deployment
-		console.log(`Carregando comando ${file} do diretorio ${directiories}`)
-		const command = require(`../commands/${directiories}/${file}`);
-		commands.push(command.data.toJSON());
+		const filePath = path.join(commandsPath, file);
+		const command = require(filePath);
+		if ('data' in command && 'execute' in command) {
+			commands.push(command.data.toJSON());
+		} else {
+			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+		}
 	}
 }
-// Construct and prepare an instance of the REST module
-const rest = new REST({ version: '10' }).setToken(token);
 
-// and deploy your commands!
+// Construct and prepare an instance of the REST module
+const rest = new REST().setToken(token);
+
+//deploy commands!
 (async () => {
 	try {
-		console.log(`Iniciando instalação de ${commands.length} comandos.`);
+		console.log(`Started refreshing ${commands.length} application (/) commands.`);
 
-        //Aqui se define de deseja só usar uma guilda(server) ou todos, para mudar todos só trocar a rota para Routes.applicationCommands(clientId),
 		// The put method is used to fully refresh all commands in the guild with the current set
 		const data = await rest.put(
-			Routes.applicationGuildCommands(clientId, guildId),
+			Routes.applicationCommands(clientId),
 			{ body: commands },
 		);
-		for(const command of commands){
-			console.log(`'Load status': '✔️  -> Command Loaded: '` + command.name);
-		}
+
+		console.log(`Successfully reloaded ${data.length} application (/) commands.`);
 	} catch (error) {
 		// And of course, make sure you catch and log any errors!
 		console.error(error);
-		for(const command of commands){
-			console.log(`'Load status': '❌  -> Command Error'` + command.name)
-		}
 	}
 })();

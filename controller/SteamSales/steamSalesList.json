@@ -1,0 +1,10 @@
+{
+    "game": 1,
+    "GameName": "Elden Ring",
+    "price": 59.99,
+    "priceDiscount": 49.99,
+    "Username_interested": {
+        "username1": "user1",
+        "username2":"user1"
+    }
+}
